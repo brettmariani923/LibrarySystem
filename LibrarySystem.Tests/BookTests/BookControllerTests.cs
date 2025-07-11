@@ -107,6 +107,41 @@ namespace LibrarySystem.Tests.BookTests
             Assert.IsType<NotFoundResult>(result);
         }
 
+        [Fact]
+        public async Task UpdateBook_NotFound_ReturnsNotFound()
+        {
+            // Arrange
+            var updatedBook = new BookDTO { Id = 1, Title = "Updated Book", Author = "Author A" };
+            _mockService.Setup(service => service.UpdateAsync(1, updatedBook))
+                        .ReturnsAsync(false);
+            // Act
+            var result = await _controller.Update(1, updatedBook);
+            // Assert
+            Assert.IsType<NotFoundResult>(result);
+        }
+
+        [Fact]
+        public async Task DeleteBook_NotFound_ReturnsNotFound()
+        {
+            // Arrange
+            _mockService.Setup(service => service.DeleteAsync(1))
+                        .ReturnsAsync(false);
+            // Act
+            var result = await _controller.Delete(1);
+            // Assert
+            Assert.IsType<NotFoundResult>(result);
+        }
+
+        [Fact]
+        public async Task CreateBook_NullBook_ReturnsBadRequest()
+        {
+            // Arrange
+            BookDTO? nullBook = null;
+            // Act
+            var result = await _controller.Create(nullBook);
+            // Assert
+            Assert.IsType<BadRequestResult>(result);
+        }
     }
 
 }

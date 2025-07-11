@@ -121,7 +121,54 @@ public class BookServiceTests
     {
         var context = await GetInMemoryDbContextAsync();
         var service = new BookService(context);
-        
+
         await Assert.ThrowsAsync<ArgumentNullException>(() => service.CreateAsync(null!));
+    }
+
+    [Fact]
+    public async Task UpdateAsync_ThrowsExceptionForNonExistentBook()
+    {
+        var context = await GetInMemoryDbContextAsync();
+        var service = new BookService(context);
+        var nonExistentBook = new BookDTO
+        {
+            Id = 999, // Non-existent ID
+            Title = "Non Existent",
+            Author = "Unknown",
+            Genre = "Unknown",
+            PublishedYear = 2023
+        };
+        await Assert.ThrowsAsync<InvalidOperationException>(() => service.UpdateAsync(999, nonExistentBook));
+    }
+
+    [Fact]
+    public async Task DeleteAsync_ReturnsFalseForNonExistentBook()
+    {
+        var context = await GetInMemoryDbContextAsync();
+        var service = new BookService(context);
+        var result = await service.DeleteAsync(999); // Non-existent ID
+        Assert.False(result);
+    }
+
+    [Fact]
+    public async Task GetAllAsync_ReturnsEmptyListWhenNoBooks()
+    {
+        var options = new DbContextOptionsBuilder<LibraryDbContext>()
+            .UseInMemoryDatabase(Guid.NewGuid().ToString())
+            .Options;
+        using var context = new LibraryDbContext(options);
+        var service = new BookService(context);
+        var result = await service.GetAllAsync();
+        Assert.NotNull(result);
+        Assert.Empty(result);
+    }
+
+    [Fact]
+    public async Task GetByIdAsync_ReturnsNullWhenBookNotFound()
+    {
+        var context = await GetInMemoryDbContextAsync();
+        var service = new BookService(context);
+        var result = await service.GetByIdAsync(999);
+        Assert.Null(result);
     }
 }
