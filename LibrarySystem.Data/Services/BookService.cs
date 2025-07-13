@@ -44,31 +44,37 @@ public class BookService : IBookService
         };
     }
 
-    public async Task<BookDTO> CreateAsync(BookDTO DTO)
+    public async Task<BookDTO?> CreateAsync(BookDTO dto)
     {
-        if (DTO == null)
-            throw new ArgumentNullException(nameof(DTO), "Book DTO cannot be null");
+        if (dto == null)
+            throw new ArgumentNullException(nameof(dto), "Book DTO cannot be null");
+
+        var exists = await _context.Books
+            .AnyAsync(b => b.Title == dto.Title && b.Author == dto.Author);
+
+        if (exists)
+            return null; 
 
         var book = new Book
         {
-            Title = DTO.Title,
-            Author = DTO.Author,
-            Genre = DTO.Genre,
-            PublishedYear = DTO.PublishedYear
+            Title = dto.Title,
+            Author = dto.Author,
+            Genre = dto.Genre,
+            PublishedYear = dto.PublishedYear
         };
 
         _context.Books.Add(book);
         await _context.SaveChangesAsync();
 
-        DTO.Id = book.Id;
-        return DTO;
+        dto.Id = book.Id;
+        return dto;
     }
-
 
     public async Task<bool> UpdateAsync(int id, BookDTO DTO)
     {
         var book = await _context.Books.FindAsync(id);
-        if (book == null) return false;
+        if (book == null)
+            throw new InvalidOperationException($"Book with ID {id} does not exist.");
 
         book.Title = DTO.Title;
         book.Author = DTO.Author;

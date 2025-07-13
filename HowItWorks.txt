@@ -1,0 +1,75 @@
+How it works:
+
+1. The client sends a json request
+
+    POST /api/books
+    Content-Type: application/json
+
+    {
+      "title": "The Hobbit",
+      "author": "J.R.R. Tolkien",
+      "genre": "Fantasy",
+      "publishedYear": 1937
+    }
+
+
+2. Controller recieves the request
+
+ [HttpPost]
+    public async Task<IActionResult> Create([FromBody] BookDTO? DTO)
+    {
+        if (DTO == null)
+            return BadRequest("Book data must not be null.");
+
+        var created = await _service.CreateAsync(DTO);
+        return CreatedAtAction(nameof(GetById), new { id = created.Id }, created);
+    }
+
+        -ASP.NET Core automatically deserializes the JSON into a BookDTO object.
+
+
+3. IBookService Interface is called from the controller method. The controller passes it to _service.CreateAsync(DTO) method.
+
+
+4. BookService Handles the Logic
+
+    public async Task<BookDTO> CreateAsync(BookDTO DTO)
+    {
+        if (DTO == null)
+            throw new ArgumentNullException(nameof(DTO), "Book DTO cannot be null");
+
+        var book = new Book
+        {
+            Title = DTO.Title,
+            Author = DTO.Author,
+            Genre = DTO.Genre,
+            PublishedYear = DTO.PublishedYear
+        };
+
+        _context.Books.Add(book);
+        await _context.SaveChangesAsync();
+
+        DTO.Id = book.Id;
+        return DTO;
+    }
+
+    -A Book entity is created from the DTO.
+    -Its added to the LibraryDbContext
+    -EEF Core saves it to the database.
+    -The generated Id is assigned back to the DTO, which is returned
+
+
+5. LibraryDbContext writes to SQLite (or In-Memory)
+
+    -DbContext maps the Book entity to a SQL table
+    -uses Fluent API to define constraints
+    -writes to library.db
+
+
+6. Controller Returns Response
+
+    return CreatedAtAction(nameof(GetById), new { id = created.Id }, created);
+
+    -returns HTTP 201 Created
+    -JSON representation of the new book
+    -Location header pointing to /api/books/{id}

@@ -40,6 +40,20 @@ namespace LibrarySystem.Tests.BookTests
         }
 
         [Fact]
+        public async Task GetAllBooks_EmptyList_ReturnsOkWithEmptyList()
+        {
+            // Arrange
+            _mockService.Setup(service => service.GetAllAsync())
+                        .ReturnsAsync(new List<BookDTO>());
+            // Act
+            var result = await _controller.GetAll();
+            // Assert
+            var okResult = Assert.IsType<OkObjectResult>(result);
+            var returnBooks = Assert.IsAssignableFrom<IEnumerable<BookDTO>>(okResult.Value);
+            Assert.Empty(returnBooks);
+        }
+
+        [Fact]
         public async Task GetBookById_ReturnsOkWithBook()
         {
             // Arrange
@@ -140,7 +154,7 @@ namespace LibrarySystem.Tests.BookTests
             // Act
             var result = await _controller.Create(nullBook);
             // Assert
-            Assert.IsType<BadRequestResult>(result);
+            Assert.IsType<BadRequestObjectResult>(result);
         }
     }
 

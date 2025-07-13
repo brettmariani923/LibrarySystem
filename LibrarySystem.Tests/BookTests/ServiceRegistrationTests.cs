@@ -13,6 +13,9 @@ namespace LibrarySystem.Tests.BookTests
         public void ServiceRegistration_RegistersAllServices()
         {
             var services = new ServiceCollection();
+
+            services.AddLogging();
+
             services.AddInfrastructure(connectionString: "", useInMemory: true);
 
             var provider = services.BuildServiceProvider();
@@ -21,6 +24,7 @@ namespace LibrarySystem.Tests.BookTests
             Assert.NotNull(provider.GetService<LibraryDbContext>());
             Assert.NotNull(provider.GetService<ILogger<BookService>>());
         }
+
 
         [Fact]
         public void ServiceRegistration_RegistersDbContextWithCorrectOptions()

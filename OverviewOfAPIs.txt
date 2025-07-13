@@ -1,0 +1,94 @@
+At its core, an API is simply:
+
+A contract that allows software applications to communicate with each other.
+
+You can think of it as a messenger that takes your request, tells another system what you want, 
+and brings the result back.
+
+A Web API, specifically, is an interface that allows interaction with a web server
+
+It is a type of api that is exposed over the web (HTTP/S) and allows applications to communicate with each
+other over the internet. It Accepts requests like GET, POST, PUT, DELETE, etc., and returns data in formats like JSON or XML.
+
+So your app (frontend, mobile, desktop, etc.) can send a request to the API, and the API will respond with the requested data 
+or perform an action on your behalf.
+
+So simply put, an API is a set of rules and protocols that allows different software systems to communicate with each other.
+
+I could say "Hey server, give me the book with ID 5" and the server would respond with the details of that book.
+
+1. Client sends a request to the API endpoint: GET /api/books/5,
+and the API processes the request, retrieves the book with ID 5 from the database, and formats the response.
+
+2. Server responds with the requested data in JSON format, like this:
+{
+  "id": 5,
+  "title": "The Great Gatsby",
+  "author": "F. Scott Fitzgerald",
+  "genre": "Fiction",
+  "published_year": 1925
+}
+
+I asked for a book, and the api gave me the data. Thats it.
+
+
+How Web APIs Work:
+
+1. **Client Request**: The client (like a web browser or mobile app) sends an HTTP request to the API endpoint. This request can include parameters, headers, and a body depending on the type of request (GET, POST, etc.).
+
+So you would specify
+ - Method: GET (to retrieve data), POST (to create data), PUT (to update data), DELETE (to remove data)
+ - URL/route: /api/books/5 (the specific resource you want to access)
+ - Headers: these are optional, things like Content-Type (application/json), Authorization (if needed)
+ - Body: for POST/PUT requests, you might send data like { "title": "New Book", "author": "Author Name" }
+
+ 2. **API Processing**: The API Controller receives the request and routes it to the correct controller, where it processes it, and interacts with the server or database as needed. This might involve querying a database, performing calculations, or calling other services.
+
+ For example, if you requested a book with ID 5, the API would look up that book in the database.
+
+	[HttpGet("{id}")]
+	public async Task<IActionResult> GetBookById(int id)
+	
+3. **Response Generation**: After processing the request, the API generates a response. This response typically includes a status code (like 200 OK for success, 404 Not Found for errors) and the requested data in a format like JSON or XML.
+ASP.NET Core seralizes the result into JSON, and the client recieves the response.
+
+ For example, if the book with ID 5 exists, the API would return a response like this:
+	{
+	  "id": 5,
+	  "title": "The Great Gatsby",
+	  "author": "F. Scott Fitzgerald",
+	  "genre": "Ficton",
+	  "published_year": 1925
+	}
+
+So the frontend might look something like this :
+
+fetch('/api/books/5')
+  .then(res => res.json())
+  .then(data => console.log(data));
+
+While the backend API controller might look like this :
+
+[HttpGet("{id}")]
+public async Task<IActionResult> GetById(int id)
+{
+    var book = await _service.GetByIdAsync(id);
+    if (book == null) return NotFound();
+    return Ok(book);
+}
+
+They're communicating via HTTP, and your controller is the bridge between the outside world
+and your application's internal logic.
+
+To summarize:
+An API is any interface that lets software communicate.
+A Web API is a type of API that uses HTTP to let apps talk to a web server.
+
+
+Why use APIs?
+
+- **Separation of Concerns**: APIs allow you to separate the frontend and backend, enabling independent development and deployment.
+- **Reusability**: APIs can be reused across different applications or services, reducing duplication of effort.
+- **Interoperability**: APIs enable different systems to work together, regardless of their underlying technologies. Lets external apps safely access your features and data without exposing your entire codebase.
+- **Scalability**: APIs can be designed to handle large volumes of requests, making it easier to scale applications as needed.
+
