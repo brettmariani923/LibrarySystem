@@ -46,7 +46,6 @@ public class BooksController : ControllerBase
         return NoContent();
     }
 
-
     [HttpPost]
     public async Task<IActionResult> Create([FromBody] BookDTO? dto)
     {

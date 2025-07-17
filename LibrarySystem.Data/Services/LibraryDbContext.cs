@@ -24,6 +24,42 @@ public class LibraryDbContext : DbContext
 }
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 //In this class we are basically configuring the Book entity.
 //Here we're telling EF what the primary key is (Id), which fields are required or optional, and what the max lengths are for each string column. 
 //This is called Fluent API configuration, and its useful when you want more control than data annotations (eg. [Required], [MaxLength]).
