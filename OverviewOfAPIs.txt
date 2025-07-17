@@ -92,3 +92,5 @@ Why use APIs?
 - **Interoperability**: APIs enable different systems to work together, regardless of their underlying technologies. Lets external apps safely access your features and data without exposing your entire codebase.
 - **Scalability**: APIs can be designed to handle large volumes of requests, making it easier to scale applications as needed.
 
+An API project exposes functionality and data to other applications or clients over a network, usually using HTTP,
+without a graphical user interface (GUI).
