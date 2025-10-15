@@ -1,4 +1,4 @@
-How it works:
+﻿How it works:
 
 1. The client sends a json request
 
@@ -73,3 +73,29 @@ How it works:
     -returns HTTP 201 Created
     -JSON representation of the new book
     -Location header pointing to /api/books/{id}
+
+
+
+Separation of Layers — DTO != Entity
+
+BookDTO is just a data container used for transferring info between layers (like from API → service → client).
+
+Book is the Entity Framework Core entity that represents the actual database table row.
+
+They’re intentionally separate types because:
+
+The database model (Book) might have EF Core attributes, navigation properties, or relationships.
+
+The DTO should remain lightweight — it’s just for transport, not persistence logic.
+
+You don’t want to expose your EF Core entities directly to external layers (that breaks Clean Architecture).
+
+So we map from DTO → Entity:
+
+var book = new Book
+{
+    Title = dto.Title,
+    Author = dto.Author,
+    Genre = dto.Genre,
+    PublishedYear = dto.PublishedYear
+};

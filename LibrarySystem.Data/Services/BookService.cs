@@ -43,6 +43,9 @@ public class BookService : IBookService
         };
     }
 
+    // Books == DbSet<Book> representing the Books table in the database
+    // Book == EF entity that represents the actual database row
+    // BookDTO == Data Transfer Object used to transfer book data between layers of the application
     public async Task<BookDTO?> CreateAsync(BookDTO dto)
     {
         if (dto == null)
@@ -54,19 +57,19 @@ public class BookService : IBookService
         if (exists)
             return null; 
 
-        var book = new Book // Creating a new Book entity from the provided BookDTO
+        var book = new Book //Book == EF entity that represents the actual database row. here we are creating the actual database table row
         {
-            Title = dto.Title,
+            Title = dto.Title, //map dtos on to new row
             Author = dto.Author,
             Genre = dto.Genre,
             PublishedYear = dto.PublishedYear
         };
 
-        _context.Books.Add(book);
-        await _context.SaveChangesAsync();
-
-        dto.Id = book.Id;
-        return dto;
+        _context.Books.Add(book); //adds the new book entity to the DbSet, marking it for insertion into the database when SaveChangesAsync is called
+        await _context.SaveChangesAsync(); // when we call savechangesasync(), ef core generates and executes an INSERT INTNO BOOKS (...) values (...) sql command
+        //if we tried to pass the dto directly, ef core wouldn't know what to do with it because its not part of the dbcontext model
+        dto.Id = book.Id; //after saving changes, we assign the generated id back to the dto so the caller knows the id of the newly created book
+        return dto; //return the dto with the new id
     }
 
     public async Task<bool> UpdateAsync(int id, BookDTO DTO)
