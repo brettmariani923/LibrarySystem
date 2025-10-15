@@ -54,7 +54,7 @@ public class BookService : IBookService
         if (exists)
             return null; 
 
-        var book = new Book
+        var book = new Book // Creating a new Book entity from the provided BookDTO
         {
             Title = dto.Title,
             Author = dto.Author,

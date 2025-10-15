@@ -1,9 +1,7 @@
 ﻿using LibrarySystem.Application.Interface;
 using LibrarySystem.Data.Services;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using Xunit;
 
 namespace LibrarySystem.Tests.BookTests
 {
@@ -24,7 +22,6 @@ namespace LibrarySystem.Tests.BookTests
             Assert.NotNull(provider.GetService<LibraryDbContext>());
             Assert.NotNull(provider.GetService<ILogger<BookService>>());
         }
-
 
         [Fact]
         public void ServiceRegistration_RegistersDbContextWithCorrectOptions()

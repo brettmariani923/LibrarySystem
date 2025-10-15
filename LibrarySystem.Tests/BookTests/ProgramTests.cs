@@ -1,5 +1,4 @@
-﻿using LibrarySystem.API;
-using LibrarySystem.Data.Services;
+﻿using LibrarySystem.Data.Services;
 using LibrarySystem.Application.Interface;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -7,7 +6,6 @@ namespace LibrarySystem.Tests.BookTests
 {
     public class ProgramTests
     {
-      
         [Fact]
         public void AddInfrastructure_RegistersServicesCorrectly()
         {
