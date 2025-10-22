@@ -55,7 +55,7 @@
 
     -A Book entity is created from the DTO.
     -Its added to the LibraryDbContext
-    -EEF Core saves it to the database.
+    -EF Core saves it to the database.
     -The generated Id is assigned back to the DTO, which is returned
 
 
@@ -75,27 +75,12 @@
     -Location header pointing to /api/books/{id}
 
 
+//for dbcontext to be able to do any work, it needs an instance of the DbContextOptions class, which contains configuration info like the database provider and connection string.
+// To handle this we are going to use dependency injection elsewhere in the application to provide the DbContextOptions when the LibraryDbContext is created.
+//because we want our dbcontextoptionos to work with our librarydbcontext, we use DbContextOptions<LibraryDbContext> as the type for the options parameter in the constructor,
+// This way, when the DI container creates an instance of LibraryDbContext, it knows to provide the correct options specifically configured for it.
 
-Separation of Layers — DTO != Entity
+//options serves as the name of the parameter that will hold the configuration settings needed by the DbContext.
+//because we want to pass those options to the base DbContext class, we call the base constructor with : base(options)
 
-BookDTO is just a data container used for transferring info between layers (like from API → service → client).
-
-Book is the Entity Framework Core entity that represents the actual database table row.
-
-They’re intentionally separate types because:
-
-The database model (Book) might have EF Core attributes, navigation properties, or relationships.
-
-The DTO should remain lightweight — it’s just for transport, not persistence logic.
-
-You don’t want to expose your EF Core entities directly to external layers (that breaks Clean Architecture).
-
-So we map from DTO → Entity:
-
-var book = new Book
-{
-    Title = dto.Title,
-    Author = dto.Author,
-    Genre = dto.Genre,
-    PublishedYear = dto.PublishedYear
-};
+//By doing this, we ensure that the LibraryDbContext is properly configured with the necessary settings to connect to the database and perform its operations.
